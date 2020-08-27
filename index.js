@@ -25,6 +25,7 @@ client.on('guildMemberAdd', member => {
 client.on('message', msg => {
   if (msg.channel.type === 'dm' && msg.author.id !== '746607629031440405') {
     msg.reply('**AAAIMX**')
+    client.channels.cache.find(ch => ch.name === 'bot').send(msg)
   }
 })
 
