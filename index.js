@@ -18,7 +18,7 @@ client.on('guildMemberAdd', member => {
   if (!channel) return
   // Send the message, mentioning the member
   channel.send(
-    `¡Hola ${member}, bienvenido a **AAAIMX**! Por favor escribe tu nombre completo y/o cambia tu **apodo** por tu primer nombre y un apellido.`
+    `¡Hola ${member}, bienvenid@ a **AAAIMX**! Por favor escribe tu nombre completo y/o cambia tu **apodo** por tu primer nombre y un apellido.`
   )
 })
 
