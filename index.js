@@ -13,13 +13,15 @@ client.on('ready', () => {
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
   // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'general')
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome')
   // Do nothing if the channel wasn't found on this server
   if (!channel) return
   // Send the message, mentioning the member
-  channel.send(
-    `¡Hola ${member}, bienvenid@ a **AAAIMX**! Por favor escribe tu nombre completo y/o cambia tu **apodo** por tu primer nombre y un apellido.`
-  )
+  setTimeout(() => {
+    channel.send(
+      `¡Hola ${member}, bienvenid@ a **AAAIMX**! Por favor escribe tu nombre completo y/o cambia tu **apodo** por tu primer nombre y un apellido.`
+    )
+  }, 1000)
 })
 
 client.on('message', msg => {
