@@ -9,7 +9,7 @@ const { Client, MessageAttachment } = require('discord.js')
 // Create an instance of a Discord client
 const client = new Client()
 
-const { getNickname, getCSVAssistantList } = require('./utils')
+const { getNickname, createCSV, getAllMembers, getAllRoles } = require('./utils')
 const { getMembership, baseURL } = require('./api')
 
 // important vars
@@ -18,6 +18,7 @@ let assistances = []
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
+  getAllMembers(client)
 })
 
 // Create an event listener for new guild members
@@ -46,7 +47,7 @@ client.on('message', async msg => {
     } else if (/stopList/.test(msg.content)) {
       console.log(assistances)
       assistanceList = false
-      const buffer = await getCSVAssistantList(assistances)
+      const buffer = await createCSV(assistances)
       const attachment = new MessageAttachment(buffer, './asistencia.csv')
       msg.reply(attachment)
       assistances = []
