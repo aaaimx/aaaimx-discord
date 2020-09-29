@@ -9,7 +9,7 @@ const baseURL =
 
 const _axios = axios.create({
   baseURL,
-  timeout: 10000
+  timeout: 20000
 })
 
 function getMembership (params) {
