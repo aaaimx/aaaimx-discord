@@ -21,7 +21,7 @@ function getAllMembers (client, role) {
     const { nickname, displayName, id } = member
     const roles = member.roles.cache.map(role => role.name)
     list.push({
-      id,
+      id: id.slice(0, 10),
       avatar: member.user.avatarURL(),
       name: nickname || displayName,
       username: member.user.username,
