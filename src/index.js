@@ -9,7 +9,7 @@ const { Client, MessageAttachment } = require('discord.js')
 // Create an instance of a Discord client
 const client = new Client()
 
-const { getNickname, createCSV, getAllMembers, getAllRoles } = require('./utils')
+const { getNickname, createCSV } = require('./utils')
 const { getMembership, baseURL } = require('./api')
 
 // important vars
@@ -18,7 +18,6 @@ let assistances = []
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
-  getAllMembers(client)
 })
 
 // Create an event listener for new guild members
@@ -90,3 +89,7 @@ client.on('message', async msg => {
 
 // Log our bot in using the token from https://discord.com/developers/applications
 client.login(process.env.TOKEN)
+
+module.exports = {
+  client
+}

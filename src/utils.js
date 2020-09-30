@@ -18,18 +18,16 @@ function getAllMembers (client) {
   // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
   guild.members.cache.forEach(member => {
     // console.log(member.nickname || member.displayName)
+    const { nickname, displayName, id } = member
     const roles = member.roles.cache.map(role => role.name)
-    if (roles.includes('Trial')) {
-      let fullname =
-        member.nickname || member.displayName || member.user.username
-      list.push({
-        Apellidos: fullname.split(' ')[1],
-        Nombre: fullname.split(' ')[0],
-        Roles: roles.join(', ')
-      })
-    }
+    list.push({
+      id,
+      avatar: member.user.avatarURL(),
+      name: nickname || displayName,
+      roles
+    })
   })
-  createCSV(list, 'trial.csv')
+  return list
 }
 
 function getAllRoles (client) {
@@ -46,7 +44,7 @@ function getAllRoles (client) {
  * @param {User} user
  */
 function getNickname (client, user) {
-  let guild = client.guilds.get(GUILD_ID)
+  let guild = client.guilds.cache.get(GUILD_ID)
   member = guild.member(user)
   return member ? member.displayName : user.username
 }
@@ -90,8 +88,8 @@ async function createCSV (elements, fileName = FILE_NAME) {
 }
 
 module.exports = {
-  getNickname,
   createCSV,
+  getNickname,
   getAllMembers,
   getAllRoles
 }
