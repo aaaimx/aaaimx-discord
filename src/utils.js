@@ -24,10 +24,13 @@ function getAllMembers (client) {
       id,
       avatar: member.user.avatarURL(),
       name: nickname || displayName,
+      username: member.user.username,
+      dateJoined: new Date(member.joinedTimestamp).toLocaleDateString(),
       roles
     })
   })
   return list
+
 }
 
 function getAllRoles (client) {
@@ -35,7 +38,12 @@ function getAllRoles (client) {
   const guild = client.guilds.cache.get(GUILD_ID)
   // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
   const roles = guild.roles.cache.sort(compare)
-  return roles.map(r => r.name)
+  return roles.map(r => {
+    return {
+      name: r.name,
+      color: '#' + Math.floor(Math.random() * r.color).toString(16)
+    }
+  })
 }
 
 /**

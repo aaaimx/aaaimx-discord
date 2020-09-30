@@ -1,0 +1,47 @@
+<section class="section">
+    <div class="columns">
+        <div class="column is-9">
+            <div class="box content">
+                {{#each members}}
+                <article class="post">
+                    <div class="media">
+                        <div class="media-left">
+
+                            <p class="image is-48x48">
+                                <img src="{{this.avatar}}" />
+                            </p>
+                        </div>
+                        <div class="media-content">
+                            <div class="content">
+                                <h4>{{this.name}}</h4>
+                                <a href="#">@{{this.username}}</a> joined at {{this.dateJoined}} &nbsp;
+                                {{#each this.roles}}
+                                <span class="tag">{{this}}</span>
+                                {{/each}}
+                            </div>
+                        </div>
+                        <div class="media-right">
+                            <span class="has-text-grey-light"><i class="fa fa-id-card"></i> {{this.id}}</span>
+                        </div>
+                    </div>
+                </article>
+                {{/each}}
+
+            </div>
+        </div>
+        <div class="column is-3">
+            <a class="button is-primary is-block is-alt is-large" href="#">New Post</a>
+            <aside class="menu">
+                <p class="menu-label">Tags</p>
+
+
+                <ul class="menu-list">
+                    {{#each roles}}
+                    <li><span class="tag is-small" style="color: {{this.color}};">{{this.name}}</span></li>
+                    {{/each}}
+                </ul>
+
+            </aside>
+        </div>
+    </div>
+</section>

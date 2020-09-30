@@ -2,11 +2,14 @@ const express = require('express')
 const router = express.Router()
 // Extract the required classes from the discord.js module
 const { client } = require('../discord')
-const { getAllMembers } = require('../../src/utils')
+const { getAllMembers, getAllRoles } = require('../../src/utils')
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' })
+router.get('/', async (req, res, next) => {
+  console.log(req.query)
+  const members = await getAllMembers(client)
+  const roles = await getAllRoles(client)
+  res.render('index', { members, roles })
 })
 
 /* GET home page. */
