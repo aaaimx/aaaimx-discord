@@ -6,8 +6,9 @@ const { getAllMembers, getAllRoles } = require('../../src/utils')
 
 /* GET home page. */
 router.get('/', async (req, res, next) => {
-  console.log(req.query)
-  const members = await getAllMembers(client)
+  const role = req.query.role
+  let members = await getAllMembers(client, role)
+  if (role) members = members.filter(m => m .roles.includes(role))
   const roles = await getAllRoles(client)
   res.render('index', { members, roles })
 })

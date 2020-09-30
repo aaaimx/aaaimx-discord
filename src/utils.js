@@ -11,7 +11,7 @@ const GUILD_ID = '717803240959246497'
  *
  * @param {Client} client Discord Client instance
  */
-function getAllMembers (client) {
+function getAllMembers (client, role) {
   // Get the Guild and store it under the variable "list"
   const guild = client.guilds.cache.get(GUILD_ID)
   const list = []
@@ -30,14 +30,15 @@ function getAllMembers (client) {
     })
   })
   return list
-
+    .sort((a, b) => compare(b.roles.length, a.roles.length))
+    .filter(m => !m.roles.includes('Bot'))
 }
 
 function getAllRoles (client) {
   // Get the Guild and store it under the variable "list"
   const guild = client.guilds.cache.get(GUILD_ID)
   // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
-  const roles = guild.roles.cache.sort(compare)
+  const roles = guild.roles.cache.sort((a, b) => compare(a.id, b.id))
   return roles.map(r => {
     return {
       name: r.name,
@@ -58,12 +59,8 @@ function getNickname (client, user) {
 }
 
 function compare (a, b) {
-  if (a.id > b.id) {
-    return 1
-  }
-  if (a.id < b.id) {
-    return -1
-  }
+  if (a > b) return 1
+  if (a < b) return -1
   // a must be equal to b
   return 0
 }
