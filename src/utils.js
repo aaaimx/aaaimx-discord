@@ -11,7 +11,7 @@ const GUILD_ID = '717803240959246497'
  *
  * @param {Client} client Discord Client instance
  */
-function getAllMembers (client, role) {
+function getAllMembers (client) {
   // Get the Guild and store it under the variable "list"
   const guild = client.guilds.cache.get(GUILD_ID)
   const list = []
@@ -22,7 +22,7 @@ function getAllMembers (client, role) {
     const roles = member.roles.cache.map(role => role.name)
     list.push({
       id: id.slice(0, 10),
-      avatar: member.user.avatarURL(),
+      avatar: member.user.displayAvatarURL(),
       name: nickname || displayName,
       username: member.user.username,
       dateJoined: new Date(member.joinedTimestamp).toLocaleDateString(),
@@ -83,12 +83,6 @@ async function createCSV (elements, fileName = FILE_NAME) {
   // Get the buffer from the 'asistencia.csv', assuming that the file exists
   const buffer = fs.readFileSync(fileName)
 
-  /**
-   * Create the attachment using MessageAttachment,
-   * overwritting the default file name to 'memes.txt'
-   * Read more about it over at
-   * http://discord.js.org/#/docs/main/master/class/MessageAttachment
-   */
   return buffer
 }
 

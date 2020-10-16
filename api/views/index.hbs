@@ -26,6 +26,21 @@
                     </div>
                 </article>
                 {{/each}}
+                <nav class="pagination" role="navigation" aria-label="pagination">
+                    <a class="pagination-previous" href="{{this.previous}}" title="This is the first page">Previous</a>
+                    <a class="pagination-next" href="{{this.next}}">Next page</a>
+                    {{!-- <ul class="pagination-list">
+                        <li>
+                            <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a>
+                        </li>
+                        <li>
+                            <a class="pagination-link" aria-label="Goto page 2">2</a>
+                        </li>
+                        <li>
+                            <a class="pagination-link" aria-label="Goto page 3">3</a>
+                        </li>
+                    </ul> --}}
+                </nav>
 
             </div>
         </div>
@@ -37,7 +52,8 @@
 
                 <ul class="menu-list">
                     {{#each roles}}
-                    <li><span class="tag is-small" style="background-color: {{this.color}};"><a href="?role={{this.name}}">{{this.name}}</a></span></li>
+                    <li><span class="tag is-small" style="background-color: {{this.color}};"><a
+                                href="?role={{this.name}}">{{this.name}}</a></span></li>
                     {{/each}}
                 </ul>
 

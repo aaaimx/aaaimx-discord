@@ -47,6 +47,12 @@ client.on('message', async msg => {
       console.log(assistances)
       assistanceList = false
       const buffer = await createCSV(assistances)
+      /**
+       * Create the attachment using MessageAttachment,
+       * overwritting the default file name to 'memes.txt'
+       * Read more about it over at
+       * http://discord.js.org/#/docs/main/master/class/MessageAttachment
+       */
       const attachment = new MessageAttachment(buffer, './asistencia.csv')
       msg.reply(attachment)
       assistances = []
@@ -89,7 +95,3 @@ client.on('message', async msg => {
 
 // Log our bot in using the token from https://discord.com/developers/applications
 client.login(process.env.TOKEN)
-
-module.exports = {
-  client
-}
