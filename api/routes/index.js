@@ -53,6 +53,7 @@ function paginateMembers (query, members) {
   return {
     total: members.length,
     page: `${offset}-${offset + limit}`,
+    nextPage: offset + limit >= members.length,
     next: `?offset=${offset + limit}&limit=${limit}&role=${role || ''}`,
     previous: offset <= 0 ? null : `?offset=${offset - limit}&limit=${limit}&role=${role || ''}`,
     members: members.slice(offset, offset + limit)

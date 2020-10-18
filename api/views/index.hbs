@@ -28,7 +28,7 @@
                 {{/each}}
                 <nav class="pagination" role="navigation" aria-label="pagination">
                     <a class="pagination-previous" href="{{this.previous}}" title="This is the first page">Previous</a>
-                    <a class="pagination-next" href="{{this.next}}">Next page</a>
+                    <a class="pagination-next"  {{#if nextPage }}disabled{{else}}href="{{this.next}}"{{/if}}>Next page</a>
                     {{!-- <ul class="pagination-list">
                         <li>
                             <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a>
