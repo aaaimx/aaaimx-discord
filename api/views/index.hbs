@@ -45,15 +45,14 @@
             </div>
         </div>
         <div class="column is-3">
-            <a class="button is-primary is-block is-alt is-large" href="#">New Post</a>
+            <a class="button is-primary is-block is-alt is-large" href="#"> {{page}} of {{ total }} members</a>
             <aside class="menu">
                 <p class="menu-label">Tags</p>
 
-
                 <ul class="menu-list">
                     {{#each roles}}
-                    <li><span class="tag is-small" style="background-color: {{this.color}};"><a
-                                href="?role={{this.name}}">{{this.name}}</a></span></li>
+                    <span class="tag is-small" style="background-color: {{this.color}};"><a
+                            href="?role={{this.name}}"><b>{{this.name}}</b></a></span>
                     {{/each}}
                 </ul>
 
