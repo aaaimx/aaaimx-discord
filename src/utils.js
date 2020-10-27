@@ -11,14 +11,14 @@ const GUILD_ID = '717803240959246497'
  *
  * @param {Client} client Discord Client instance
  */
-function getAllMembers (client) {
+async function getAllMembers (client) {
   // Get the Guild and store it under the variable "list"
   const guild = client.guilds.cache.get(GUILD_ID)
   const list = []
-  console.log(guild.members)
   // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
-  guild.members.cache.forEach(member => {
-    // console.log(member.nickname || member.displayName)
+  let members = await guild.members.fetch()
+  members.forEach(member => {
+    console.log(member.nickname || member.displayName)
     const { nickname, displayName, id } = member
     const roles = member.roles.cache.map(role => role.name)
     list.push({

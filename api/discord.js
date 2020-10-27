@@ -7,7 +7,7 @@ require('dotenv').config()
 const { Client } = require('discord.js')
 
 // Create an instance of a Discord client
-const client = new Client({ options: { fetfetchAllMembers: true }})
+const client = new Client()
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
