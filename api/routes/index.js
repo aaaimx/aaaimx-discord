@@ -41,13 +41,13 @@ function paginateMembers (query, members) {
   const offset = parseInt(query.offset) || 0
   const sortBy = query.sortBy || []
   const sortDesc = query.sortDesc || []
-  const q = query.q
+  const q = query.q || ''
 
   // sorting by field
   members = sortMembers(members, sortBy, sortDesc)
 
   // search
-  if (q) members = filterMembers(members, q, role)
+  members = filterMembers(members, q, role)
 
   // paginated response
   return {
