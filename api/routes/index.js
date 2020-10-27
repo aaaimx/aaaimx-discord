@@ -7,9 +7,9 @@ const { getAllMembers, getAllRoles } = require('../../src/utils')
 function sortMembers (members, sortBy, sortDesc) {
   if (sortBy.length === 1 && sortDesc.length === 1) {
     members = members.sort((a, b) => {
-      const sortA = a[sortBy[0]]
-      const sortB = b[sortBy[0]]
-      if (sortDesc[0] == 'true') {
+      const sortA = a[sortBy]
+      const sortB = b[sortBy]
+      if (sortDesc == 'true') {
         if (sortA < sortB) return 1
         if (sortA > sortB) return -1
         return 0
@@ -39,15 +39,15 @@ function paginateMembers (query, members) {
   const role = query.role
   const limit = parseInt(query.limit) || 10
   const offset = parseInt(query.offset) || 0
-  const q = query.q || ''
   const sortBy = query.sortBy || []
   const sortDesc = query.sortDesc || []
+  const q = query.q
 
   // sorting by field
   members = sortMembers(members, sortBy, sortDesc)
 
   // search
-  members = filterMembers(members, q, role)
+  if (q) members = filterMembers(members, q, role)
 
   // paginated response
   return {
