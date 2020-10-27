@@ -11,28 +11,35 @@ const GUILD_ID = '717803240959246497'
  *
  * @param {Client} client Discord Client instance
  */
-async function getAllMembers (client) {
+function getAllMembers (client) {
   // Get the Guild and store it under the variable "list"
   const guild = client.guilds.cache.get(GUILD_ID)
   const list = []
   // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
-  let members = await guild.members.fetch()
-  members.forEach(member => {
-    console.log(member.nickname || member.displayName)
-    const { nickname, displayName, id } = member
-    const roles = member.roles.cache.map(role => role.name)
-    list.push({
-      id: id.slice(0, 10),
-      avatar: member.user.displayAvatarURL(),
-      name: nickname || displayName,
-      username: member.user.username,
-      dateJoined: new Date(member.joinedTimestamp).toLocaleDateString(),
-      roles
+  // Fetch a single member without checking cache
+
+  return new Promise((res, rej) => {
+    guild.members.fetch({ force: true }).then(members => {
+      members.forEach(member => {
+        // console.log(member.nickname || member.displayName)
+        const { nickname, displayName, id } = member
+        const roles = member.roles.cache.map(role => role.name)
+        list.push({
+          id: id.slice(0, 10),
+          avatar: member.user.displayAvatarURL(),
+          name: nickname || displayName,
+          username: member.user.username,
+          dateJoined: new Date(member.joinedTimestamp).toLocaleDateString(),
+          roles
+        })
+      })
+      res(
+        list
+          .sort((a, b) => compare(b.roles.length, a.roles.length))
+          .filter(m => !m.roles.includes('Bot'))
+      )
     })
   })
-  return list
-    .sort((a, b) => compare(b.roles.length, a.roles.length))
-    .filter(m => !m.roles.includes('Bot'))
 }
 
 function getAllRoles (client) {
