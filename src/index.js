@@ -11,6 +11,14 @@ const client = new Client()
 
 const { getNickname, createCSV } = require('./utils')
 const { getMembership, baseURL } = require('./api')
+const { getChannel } = require('./helpers')
+const {
+  WELLCOME_CHANNEL_ID,
+  BOT_CHANNEL_ID,
+  BOT_ID,
+  BOT_CHANNEL_NAME,
+  INSTRUCTIONS
+} = require('./constants')
 
 // important vars
 let assistanceList = false
@@ -21,28 +29,25 @@ client.on('ready', () => {
 })
 
 // Create an event listener for new guild members
-client.on('guildMemberAdd', member => {
+client.on('guildMemberAdd', async member => {
   // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'welcome')
+  const channel = await getChannel(client, WELLCOME_CHANNEL_ID)
   // Do nothing if the channel wasn't found on this server
   if (!channel) return
   // Send the message, mentioning the member
-  setTimeout(() => {
-    channel.send(
-      `¡Hola ${member}, bienvenid@ a **AAAIMX**! Por favor escribe tu nombre completo y/o cambia tu **apodo** por tu primer nombre y un apellido.`
-    )
-  }, 1000)
+  channel.send(
+    `¡Hola ${member}, bienvenid@ a **AAAIMX**! ${INSTRUCTIONS}.`
+  )
 })
 
 client.on('message', async msg => {
-  if (msg.channel.type === 'dm' && msg.author.id !== '746607629031440405') {
+  if (msg.channel.type === 'dm' && msg.author.id !== BOT_ID) {
     if (/startList/.test(msg.content)) {
       assistanceList = true
-      client.channels.cache
-        .find(ch => ch.name === 'bot')
-        .send(
-          'Inicia pase de **lista**.\nPor favor, escribe tu **nombre completo** en un solo mensaje'
-        )
+      const channel = await getChannel(client, BOT_CHANNEL_ID)
+      channel.send(
+        'Inicia pase de **lista**.\nPor favor, escribe tu **nombre completo** en un solo mensaje'
+      )
     } else if (/stopList/.test(msg.content)) {
       console.log(assistances)
       assistanceList = false
@@ -60,14 +65,14 @@ client.on('message', async msg => {
   }
   if (
     assistanceList &&
-    msg.channel.name === 'bot' &&
-    msg.author.id !== '746607629031440405'
+    msg.channel.name === BOT_CHANNEL_NAME &&
+    msg.author.id !== BOT_ID
   ) {
     const date = new Date(msg.createdTimestamp)
     const person = { date: date.toLocaleString(), name: msg.content }
     assistances.push(person)
   }
-  if (msg.channel.name === 'bot') {
+  if (msg.channel.name === BOT_CHANNEL_NAME) {
     if (/getMembership/.test(msg.content)) {
       let nickname, id, avatar
       let userMentioned = msg.mentions.users.first()

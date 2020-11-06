@@ -1,7 +1,11 @@
 const express = require('express')
 const router = express.Router()
 // Extract the required classes from the discord.js module
-const { client } = require('../discord')
+const { Client } = require('discord.js')
+
+// Create an instance of a Discord client
+const client = new Client()
+
 const { getAllMembers, getAllRoles } = require('../../src/utils')
 
 function sortMembers (members, sortBy, sortDesc) {
@@ -55,17 +59,23 @@ function paginateMembers (query, members) {
     page: `${offset}-${offset + limit}`,
     nextPage: offset + limit >= members.length,
     next: `?offset=${offset + limit}&limit=${limit}&role=${role || ''}`,
-    previous: offset <= 0 ? null : `?offset=${offset - limit}&limit=${limit}&role=${role || ''}`,
+    previous:
+      offset <= 0
+        ? null
+        : `?offset=${offset - limit}&limit=${limit}&role=${role || ''}`,
     members: members.slice(offset, offset + limit)
   }
 }
 
 /* GET home page. */
-router.get('/', async (req, res, next) => {
-  let members = await getAllMembers(client)
-  const paginatedResponse = paginateMembers(req.query, members)
-  const roles = await getAllRoles(client)
-  res.render('index', { ...paginatedResponse, roles })
+router.get('/', (req, res, next) => {
+  client.on('ready', async () => {
+    console.log(`Logged in as ${client.user.tag}!`)
+    let members = await getAllMembers(client)
+    const paginatedResponse = paginateMembers(req.query, members)
+    const roles = await getAllRoles(client)
+    res.render('index', { ...paginatedResponse, roles })
+  })
 })
 
 /* GET home page. */
@@ -73,6 +83,12 @@ router.get('/members', async (req, res, next) => {
   const members = await getAllMembers(client)
   const paginatedResponse = paginateMembers(req.query, members)
   res.send(paginatedResponse)
+})
+
+/* GET home page. */
+router.get('/roles', async (req, res, next) => {
+  const roles = await getAllRoles(client)
+  res.send(roles)
 })
 
 module.exports = router

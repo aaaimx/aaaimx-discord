@@ -4,8 +4,8 @@
 const ObjectsToCsv = require('objects-to-csv')
 // Import the native fs module
 const fs = require('fs')
+const { GUILD_ID } = require('./constants')
 const FILE_NAME = './asistencia.csv'
-const GUILD_ID = '717803240959246497'
 
 /**
  *
