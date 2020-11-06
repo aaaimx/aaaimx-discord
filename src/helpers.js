@@ -2,7 +2,7 @@ const { GUILD_ID } = require('./constants')
 
 async function getChannel (client, channel_id) {
   try {
-    const channel = await client.channels.fetch(channel_id)
+    const channel = await client.channels.fetch(channel_id, false, true)
     return channel
   } catch (error) {
     return null
@@ -11,7 +11,7 @@ async function getChannel (client, channel_id) {
 
 async function getRoles (client) {
   try {
-    const guild = await client.guilds.fetch(GUILD_ID)
+    const guild = await client.guilds.fetch(GUILD_ID, true)
     const roles = guild.roles.fetch()
     return roles
   } catch (error) {
