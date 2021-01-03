@@ -5,7 +5,7 @@ const axios = require('axios')
 const baseURL =
   process.env.NODE_ENV === 'development'
     ? 'http://127.0.0.1:8000'
-    : 'https://aaaimx-admin-stage.herokuapp.com'
+    : 'https://aaaimx-admin.herokuapp.com'
 
 const _axios = axios.create({
   baseURL,

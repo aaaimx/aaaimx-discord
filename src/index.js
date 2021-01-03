@@ -10,14 +10,14 @@ const { Client, MessageAttachment } = require('discord.js')
 const client = new Client()
 
 const { getNickname, createCSV } = require('./utils')
-const { getMembership, baseURL } = require('./api')
 const { getChannel } = require('./helpers')
 const {
   WELLCOME_CHANNEL_ID,
   BOT_CHANNEL_ID,
   BOT_ID,
   BOT_CHANNEL_NAME,
-  INSTRUCTIONS
+  INSTRUCTIONS,
+  BASE_URL
 } = require('./constants')
 
 // important vars
@@ -35,9 +35,7 @@ client.on('guildMemberAdd', async member => {
   // Do nothing if the channel wasn't found on this server
   if (!channel) return
   // Send the message, mentioning the member
-  channel.send(
-    `¡Hola ${member}, bienvenid@ a **AAAIMX**! ${INSTRUCTIONS}.`
-  )
+  channel.send(`¡Hola ${member}, bienvenid@ a **AAAIMX**! ${INSTRUCTIONS}.`)
 })
 
 client.on('message', async msg => {
@@ -85,13 +83,8 @@ client.on('message', async msg => {
         id = userMentioned.id
         avatar = userMentioned.avatarURL()
       }
-      await getMembership({
-        nickname,
-        avatar,
-        id
-      })
       const attachment = new MessageAttachment(
-        `${baseURL}/media/membership.jpg`
+        `${BASE_URL}/membership/?id=${id}&nickname=${nickname}&avatar=${avatar}`
       )
       msg.reply(attachment)
     }
