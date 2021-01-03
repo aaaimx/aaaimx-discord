@@ -6,7 +6,7 @@
   "scripts": {
     "heroku-postbuild": "npm run build",
     "start": "node src/index.js",
-    "api": "nodemon api/bin/www",
+    "api": "node api/bin/www",
     "test": "jest --forceExit --detectOpenHandles"
   },
   "author": "",
