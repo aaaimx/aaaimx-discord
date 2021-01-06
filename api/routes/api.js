@@ -1,17 +1,15 @@
 const express = require('express')
 const router = express.Router()
 // Extract the required classes from the discord.js module
-const { Client, MessageEmbed } = require('discord.js')
-
-// Create an instance of a Discord client
-const client = new Client()
+const { Client } = require('discord.js')
 
 const { getAllMembers, getAllRoles } = require('../../src/utils')
 const { getChannel } = require('../../src/helpers')
 const { BOT_CHANNEL_ID } = require('../../src/constants')
 
-/* GET home page. */
+/* GET Discord server members */
 router.get('/members', async (req, res, next) => {
+  const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     const members = await getAllMembers(client)
@@ -22,8 +20,9 @@ router.get('/members', async (req, res, next) => {
   })
 })
 
-/* GET home page. */
+/* GET Discord server roles */
 router.get('/roles', async (req, res, next) => {
+  const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     console.log(`Logged in as ${client.user.tag}!`)
@@ -32,8 +31,9 @@ router.get('/roles', async (req, res, next) => {
   })
 })
 
-/* GET home page. */
+/* POST message to BOT channel */
 router.post('/messages/channel', async (req, res, next) => {
+  const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     const channel = await getChannel(client, BOT_CHANNEL_ID)
@@ -42,13 +42,14 @@ router.post('/messages/channel', async (req, res, next) => {
   })
 })
 
-/* GET home page. */
+/* POST event created or updated */
 router.post('/messages/events/reminder', async (req, res, next) => {
   const event = req.body
+  const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     const channel = await getChannel(client, BOT_CHANNEL_ID)
-    const exampleEmbed = {
+    const embed = {
       color: 0xd9ad26,
       title: event.title,
       url: 'https://aaaimx.github.io/aaaimx-admin/#/events/' + event.id,
@@ -61,7 +62,11 @@ router.post('/messages/events/reminder', async (req, res, next) => {
       fields: [
         {
           name: 'Fechas',
-          value: event.date_start + event.date_end
+          value: `${new Date(
+            event.date_start
+          ).toLocaleDateString()} - ${new Date(
+            event.date_end
+          ).toLocaleDateString()}`
         },
         {
           name: 'Disponibilidad',
@@ -101,7 +106,56 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
-    channel.send({ embed: exampleEmbed })
+    channel.send({ embed })
+    res.send(channel)
+  })
+})
+
+/* POST certificate created or updated */
+router.post('/messages/certificates/new', async (req, res, next) => {
+  const certificate = req.body
+  const client = new Client()
+  client.login(process.env.TOKEN)
+  client.on('ready', async () => {
+    console.log('Logged as AAAIMX!')
+    const channel = await getChannel(client, BOT_CHANNEL_ID)
+    const embed = {
+      color: 0xd9ad26,
+      title: `CERTIFICATE OF ${certificate.type} | ${certificate.to}`,
+      url: 'https://www.aaaimx.org/certificates/?id=' + certificate.uuid,
+      author: {
+        name: 'AAAIMX Event Manager',
+        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
+        url: 'https://aaaimx.github.io/aaaimx-admin/#/'
+      },
+      description: certificate.description,
+      fields: [
+        {
+          name: 'Fecha',
+          value: new Date(certificate.created_at).toLocaleDateString(),
+          inline: true
+        },
+        {
+          name: 'Estado',
+          value: certificate.published ? 'Online' : 'Draft',
+          inline: true
+        },
+        {
+          name: 'Evento',
+          value: certificate.event || 'No indicado',
+          inline: true
+        }
+      ],
+      image: {
+        url: certificate.file
+      },
+      timestamp: new Date(),
+      footer: {
+        text: 'ID: ' + certificate.uuid,
+        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
+      }
+    }
+    channel.send({ embed })
     res.send(channel)
   })
 })

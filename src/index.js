@@ -12,11 +12,11 @@ const client = new Client()
 const { getNickname, createCSV } = require('./utils')
 const { getChannel } = require('./helpers')
 const {
-  WELLCOME_CHANNEL_ID,
-  BOT_CHANNEL_ID,
+  WELCOME_CHANNEL_ID,
+  WELCOME_MESSAGE,
   BOT_ID,
+  BOT_CHANNEL_ID,
   BOT_CHANNEL_NAME,
-  INSTRUCTIONS,
   BASE_URL
 } = require('./constants')
 
@@ -31,11 +31,11 @@ client.on('ready', () => {
 // Create an event listener for new guild members
 client.on('guildMemberAdd', async member => {
   // Send the message to a designated channel on a server:
-  const channel = await getChannel(client, WELLCOME_CHANNEL_ID)
+  const channel = await getChannel(client, WELCOME_CHANNEL_ID)
   // Do nothing if the channel wasn't found on this server
   if (!channel) return
   // Send the message, mentioning the member
-  channel.send(`¡Hola ${member}, bienvenid@ a **AAAIMX**! ${INSTRUCTIONS}.`)
+  channel.send(`¡Hola ${member}, bienvenid@ a **AAAIMX**! ${WELCOME_MESSAGE}.`)
 })
 
 client.on('message', async msg => {
