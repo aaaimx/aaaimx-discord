@@ -3,7 +3,7 @@ const router = express.Router()
 // Extract the required classes from the discord.js module
 const { Client } = require('discord.js')
 
-const { getAllMembers, getAllRoles } = require('../../src/utils')
+const { getAllMembers, getAllRoles, longDate } = require('../../src/utils')
 const { getChannel } = require('../../src/helpers')
 const { BOT_CHANNEL_ID } = require('../../src/constants')
 
@@ -62,18 +62,13 @@ router.post('/messages/events/reminder', async (req, res, next) => {
       fields: [
         {
           name: 'Fechas',
-          value: `${new Date(
-            event.date_start
-          ).toLocaleDateString()} - ${new Date(
-            event.date_end
-          ).toLocaleDateString()}`
+          value: `${longDate(event.date_start)} - ${longDate(event.date_end)}`
         },
         {
           name: 'Disponibilidad',
-          value:
-            event.corum === 0 && event.open_to_public
-              ? 'Abierto al público'
-              : event.corum + ' personas',
+          value: event.open_to_public
+            ? 'Abierto al público'
+            : event.corum + ' personas',
           inline: true
         },
         {
@@ -88,7 +83,7 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         },
         {
           name: 'Division',
-          value: event.division || 'AAAIMX',
+          value: event.division ? event.division.name : 'AAAIMX',
           inline: true
         },
         {
@@ -96,13 +91,15 @@ router.post('/messages/events/reminder', async (req, res, next) => {
           value: `
           - Flyer
           - Certificados
-          - Publicar en Discord y 24 hrs despues en redes sociales (Faceboook, Instagram, ...)
+          - Publicar en Discord (**#events**) y 24 hrs después en redes sociales (**Faceboook**, **Instagram**, ...)
+          - **24 hrs antes** del evento enviar correos de confirmación
+          - Exportar la **lista de asistentes** y enviarsela al tallerista
           `
         }
       ],
       timestamp: new Date(),
       footer: {
-        text: '7 días restan para el evento',
+        text: 'Recordatorio de Evento',
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
@@ -142,7 +139,7 @@ router.post('/messages/certificates/new', async (req, res, next) => {
         },
         {
           name: 'Evento',
-          value: certificate.event || 'No indicado',
+          value: certificate.event ? certificate.event.title : 'No indicado',
           inline: true
         }
       ],

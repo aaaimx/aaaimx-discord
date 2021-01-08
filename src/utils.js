@@ -73,6 +73,19 @@ function compare (a, b) {
   return 0
 }
 
+function longDate (date) {
+  var event = new Date(date)
+  event.setDate(event.getDate())
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour12: false
+  }
+  return event.toLocaleString('es-MX', options)
+}
+
 /**
  *
  * @param {Array} elements
@@ -95,6 +108,7 @@ async function createCSV (elements, fileName = FILE_NAME) {
 }
 
 module.exports = {
+  longDate,
   createCSV,
   getNickname,
   getAllMembers,
