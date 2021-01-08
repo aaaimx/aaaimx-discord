@@ -5,7 +5,6 @@ const ObjectsToCsv = require('objects-to-csv')
 // Import the native fs module
 const fs = require('fs')
 const { GUILD_ID } = require('./constants')
-const FILE_NAME = './asistencia.csv'
 
 /**
  *
@@ -44,14 +43,37 @@ function getAllMembers (client) {
 
 function getAllRoles (client) {
   // Get the Guild and store it under the variable "list"
-  const guild = client.guilds.cache.get(GUILD_ID)
-  // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
-  const roles = guild.roles.cache.sort((a, b) => compare(a.id, b.id))
-  return roles.map(r => {
-    return {
-      name: r.name,
-      color: '#' + Math.floor(Math.random() * r.color).toString(16)
-    }
+  return new Promise((resolve, reject) => {
+    client.guilds.fetch(GUILD_ID, { force: true }).then(guild => {
+      // Iterate through the collection of GuildMembers from the Guild getting the username property of each member
+      const roles = guild.roles.cache.sort((a, b) => compare(a.id, b.id))
+      resolve(
+        roles.map(r => {
+          return {
+            name: r.name,
+            color: r.hexColor,
+            position: r.position,
+            rawPosition: r.rawPosition
+          }
+        })
+      )
+    })
+  })
+}
+
+function kickMembers (client, user) {
+  return new Promise((resolve, reject) => {
+    client.guilds.fetch(GUILD_ID, { force: true }).then(guild => {
+      guild.members
+        .fetch({
+          user
+        })
+        .then(members => {
+          const promises = members.map(m => m.kick())
+          Promise.all(promises).then(res => resolve(res))
+        })
+        .catch(console.error)
+    })
   })
 }
 
@@ -90,7 +112,7 @@ function longDate (date) {
  *
  * @param {Array} elements
  */
-async function createCSV (elements, fileName = FILE_NAME) {
+async function createCSV (elements, fileName) {
   // If you use "await", code must be inside an asynchronous function:
 
   const csv = new ObjectsToCsv(elements)
@@ -112,5 +134,6 @@ module.exports = {
   createCSV,
   getNickname,
   getAllMembers,
-  getAllRoles
+  getAllRoles,
+  kickMembers
 }

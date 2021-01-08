@@ -9,35 +9,17 @@ async function getChannel (client, channel_id) {
   }
 }
 
-async function getRoles (client) {
+async function getGuild (client) {
   try {
-    const guild = await client.guilds.fetch(GUILD_ID, true)
-    const roles = guild.roles.fetch()
-    return roles
+    const guild = await client.guilds.fetch(GUILD_ID, { force: true })
+    return guild
   } catch (error) {
-    console.log(error)
     return null
   }
 }
 
-async function getAllMembers (client, query = 'A', limit = 10) {
-  try {
-    const guild = await client.guilds.fetch(GUILD_ID)
-    // Fetch by query
-    const members = await guild.members.fetch({
-      query,
-      force: true,
-      limit
-    })
-    return members
-  } catch (error) {
-    console.log(error)
-    return null
-  }
-}
 
 module.exports = {
   getChannel,
-  getAllMembers,
-  getRoles
+  getGuild
 }

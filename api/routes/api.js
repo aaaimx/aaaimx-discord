@@ -3,9 +3,13 @@ const router = express.Router()
 // Extract the required classes from the discord.js module
 const { Client } = require('discord.js')
 
-const { getAllMembers, getAllRoles, longDate } = require('../../src/utils')
+const { getAllMembers, getAllRoles, longDate, kickMembers } = require('../../src/utils')
 const { getChannel } = require('../../src/helpers')
-const { BOT_CHANNEL_ID } = require('../../src/constants')
+const {
+  BOT_CHANNEL_ID,
+  EVENTS_COMMITTEE_CHANNEL_ID,
+  OUTREACH_COMMITTEE_CHANNEL_ID
+} = require('../../src/constants')
 
 /* GET Discord server members */
 router.get('/members', async (req, res, next) => {
@@ -13,10 +17,23 @@ router.get('/members', async (req, res, next) => {
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     const members = await getAllMembers(client)
+    const roles = await getAllRoles(client)
     res.send({
       total: members.length,
-      members
+      members,
+      roles
     })
+  })
+})
+
+/* POST kick multiple members by id */
+router.post('/members/kick', async (req, res, next) => {
+  const client = new Client()
+  client.login(process.env.TOKEN)
+  client.on('ready', async () => {
+    const users = req.body.users
+    const members = await kickMembers(client, users)
+    res.send(members)
   })
 })
 
@@ -48,7 +65,6 @@ router.post('/messages/events/reminder', async (req, res, next) => {
   const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
-    const channel = await getChannel(client, BOT_CHANNEL_ID)
     const embed = {
       color: 0xd9ad26,
       title: event.title,
@@ -103,8 +119,22 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
-    channel.send({ embed })
-    res.send(channel)
+
+    if (process.env.NODE_ENV === 'development') {
+      const channel = await getChannel(client, BOT_CHANNEL_ID)
+      channel.send({ embed })
+    } else {
+      const eventsChannel = await getChannel(
+        client,
+        EVENTS_COMMITTEE_CHANNEL_ID
+      )
+      const outreachChannel = await getChannel(
+        client,
+        OUTREACH_COMMITTEE_CHANNEL_ID
+      )
+      eventsChannel.send({ embed })
+      outreachChannel.send({ embed })
+    }
   })
 })
 
@@ -115,7 +145,6 @@ router.post('/messages/certificates/new', async (req, res, next) => {
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     console.log('Logged as AAAIMX!')
-    const channel = await getChannel(client, BOT_CHANNEL_ID)
     const embed = {
       color: 0xd9ad26,
       title: `CERTIFICATE OF ${certificate.type} | ${certificate.to}`,
@@ -152,8 +181,14 @@ router.post('/messages/certificates/new', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
-    channel.send({ embed })
-    res.send(channel)
+    if (process.env.NODE_ENV === 'development') {
+      const channel = await getChannel(client, BOT_CHANNEL_ID)
+      channel.send({ embed })
+    } else {
+      const channel = await getChannel(client, EVENTS_COMMITTEE_CHANNEL_ID)
+      channel.send({ embed })
+    }
+    res.send(embed)
   })
 })
 

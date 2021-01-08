@@ -39,54 +39,60 @@ client.on('guildMemberAdd', async member => {
 })
 
 client.on('message', async msg => {
-  if (msg.channel.type === 'dm' && msg.author.id !== BOT_ID) {
-    if (/startList/.test(msg.content)) {
-      assistanceList = true
-      const channel = await getChannel(client, BOT_CHANNEL_ID)
-      channel.send(
-        'Inicia pase de **lista**.\nPor favor, escribe tu **nombre completo** en un solo mensaje'
-      )
-    } else if (/stopList/.test(msg.content)) {
-      console.log(assistances)
-      assistanceList = false
-      const buffer = await createCSV(assistances)
-      /**
-       * Create the attachment using MessageAttachment,
-       * overwritting the default file name to 'memes.txt'
-       * Read more about it over at
-       * http://discord.js.org/#/docs/main/master/class/MessageAttachment
-       */
-      const attachment = new MessageAttachment(buffer, './asistencia.csv')
-      msg.reply(attachment)
-      assistances = []
-    }
-  }
-  if (
-    assistanceList &&
-    msg.channel.name === BOT_CHANNEL_NAME &&
-    msg.author.id !== BOT_ID
-  ) {
-    const date = new Date(msg.createdTimestamp)
-    const person = { date: date.toLocaleString(), name: msg.content }
-    assistances.push(person)
-  }
   if (msg.channel.name === BOT_CHANNEL_NAME) {
     if (/getMembership/.test(msg.content)) {
-      let nickname, id, avatar
+      let nickname, id, avatar, dateJoined
       let userMentioned = msg.mentions.users.first()
       if (!userMentioned) {
         nickname = getNickname(client, msg.author)
         id = msg.author.id
         avatar = msg.author.avatarURL()
+        dateJoined = msg.author.date_joined
       } else {
         nickname = getNickname(client, userMentioned)
         id = userMentioned.id
         avatar = userMentioned.avatarURL()
+        dateJoined = msg.author.date_joined
       }
-      const attachment = new MessageAttachment(
-        `${BASE_URL}/membership/?id=${id}&nickname=${nickname}&avatar=${avatar}`
-      )
-      msg.reply(attachment)
+      const embed = {
+        color: 0xd9ad26,
+        title: nickname,
+        url: 'https://www.aaaimx.org/community/',
+        author: {
+          name: 'AAAI Student Chapter México',
+          icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
+          url: 'https://www.aaaimx.org'
+        },
+        description: '@' + msg.author.username,
+        thumbnail: {
+          url: avatar
+        },
+        fields: [
+          {
+            name: 'ID',
+            value: msg.author.id
+          },
+          {
+            name: 'Date joined',
+            value: '20/12/2018',
+            inline: true
+          },
+          {
+            name: 'Birthday',
+            value: '10/12/1998',
+            inline: true
+          }
+        ],
+        image: {
+          url: 'https://www.aaaimx.org/img/sections-background/community.jpg'
+        },
+        // timestamp: new Date(),
+        footer: {
+          text: 'Association for Advancement of Artificial Intelligence',
+          icon_url: 'https://www.aaaimx.org/img/sprites/aaai-transpeps.png'
+        }
+      }
+      msg.reply({ embed })
     }
   }
 })
