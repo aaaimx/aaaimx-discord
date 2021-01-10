@@ -124,9 +124,21 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
-    const channel = await getChannel(client, EVENTS_COMMITTEE_CHANNEL_ID)
-    channel.send({ embed })
-    res.send(embed)
+    if (process.env.NODE_ENV === 'development') {
+      const channel = await getChannel(client, BOT_CHANNEL_ID)
+      channel.send({ embed })
+    } else {
+      const eventsChannel = await getChannel(
+        client,
+        EVENTS_COMMITTEE_CHANNEL_ID
+      )
+      const outreachChannel = await getChannel(
+        client,
+        OUTREACH_COMMITTEE_CHANNEL_ID
+      )
+      eventsChannel.send({ embed })
+      outreachChannel.send({ embed })
+    }
   })
 })
 
