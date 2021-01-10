@@ -139,6 +139,7 @@ router.post('/messages/events/reminder', async (req, res, next) => {
       eventsChannel.send({ embed })
       outreachChannel.send({ embed })
     }
+    res.send(embed)
   })
 })
 
