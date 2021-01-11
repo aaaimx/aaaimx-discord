@@ -73,11 +73,11 @@ router.post('/messages/events/reminder', async (req, res, next) => {
     const embed = {
       color: 0xd9ad26,
       title: event.title,
-      url: 'https://aaaimx.github.io/aaaimx-admin/#/events/' + event.id,
+      url: 'https://www.aaaimx.org/admin/#/events/' + event.id,
       author: {
         name: 'AAAIMX Event Manager',
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
-        url: 'https://aaaimx.github.io/aaaimx-admin/#/'
+        url: 'https://www.aaaimx.org/admin/#/'
       },
       description: event.description,
       fields: [
