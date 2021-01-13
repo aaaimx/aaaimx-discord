@@ -97,7 +97,6 @@ function compare (a, b) {
 
 function longDate (date) {
   var event = new Date(date)
-  event.setDate(event.getDate())
   const options = {
     weekday: 'short',
     year: 'numeric',

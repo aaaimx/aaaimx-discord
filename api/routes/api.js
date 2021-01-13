@@ -70,7 +70,7 @@ router.post('/messages/events/reminder', async (req, res, next) => {
   const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
-    const embed = {
+    const embed1 = {
       color: 0xd9ad26,
       title: event.title,
       url: 'https://www.aaaimx.org/admin/#/events/' + event.id,
@@ -79,7 +79,6 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
         url: 'https://www.aaaimx.org/admin/#/'
       },
-      description: event.description,
       fields: [
         {
           name: 'Fechas',
@@ -124,9 +123,25 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
       }
     }
+    const embed2 = {
+      color: 0xd9ad26,
+      title: 'Información adicional',
+      author: {
+        name: 'AAAIMX Event Manager',
+        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
+        url: 'https://www.aaaimx.org/admin/#/'
+      },
+      description: event.description,
+      timestamp: new Date(),
+      footer: {
+        text: 'Recordatorio de Evento',
+        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
+      }
+    }
     if (process.env.NODE_ENV === 'development') {
       const channel = await getChannel(client, BOT_CHANNEL_ID)
-      channel.send({ embed })
+      channel.send({ embed: embed1 })
+      channel.send({ embed: embed2 })
     } else {
       const eventsChannel = await getChannel(
         client,
@@ -136,10 +151,12 @@ router.post('/messages/events/reminder', async (req, res, next) => {
         client,
         OUTREACH_COMMITTEE_CHANNEL_ID
       )
-      eventsChannel.send({ embed })
-      outreachChannel.send({ embed })
+      eventsChannel.send({ embed: embed1 })
+      eventsChannel.send({ embed: embed2 })
+      outreachChannel.send({ embed: embed1 })
+      outreachChannel.send({ embed: embed2 })
     }
-    res.send(embed)
+    res.send({ embed1, embed2 })
   })
 })
 

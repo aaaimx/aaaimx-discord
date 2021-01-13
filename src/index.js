@@ -4,96 +4,36 @@
 require('dotenv').config()
 
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js')
+const { Client } = require('discord.js')
 
 // Create an instance of a Discord client
 const client = new Client()
+const { onGuildMemberAdd, getMembership, onKick } = require('./actions')
 
-const { getNickname, createCSV } = require('./utils')
-const { getChannel } = require('./helpers')
-const {
-  WELCOME_CHANNEL_ID,
-  WELCOME_MESSAGE,
-  BOT_ID,
-  BOT_CHANNEL_ID,
-  BOT_CHANNEL_NAME,
-  BASE_URL
-} = require('./constants')
-
-// important vars
-let assistanceList = false
-let assistances = []
-
+/**
+ * The ready event is vital, it means that only _after_ this will your bot start reacting to information
+ * received from Discord
+ */
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 })
 
 // Create an event listener for new guild members
-client.on('guildMemberAdd', async member => {
-  // Send the message to a designated channel on a server:
-  const channel = await getChannel(client, WELCOME_CHANNEL_ID)
-  // Do nothing if the channel wasn't found on this server
-  if (!channel) return
-  // Send the message, mentioning the member
-  channel.send(`¡Hola ${member}, bienvenid@ a **AAAIMX**! ${WELCOME_MESSAGE}.`)
-})
+client.on('guildMemberAdd', member => onGuildMemberAdd(member, client))
 
-client.on('message', async msg => {
-  if (msg.channel.name === BOT_CHANNEL_NAME) {
-    if (/getMembership/.test(msg.content)) {
-      let nickname, id, avatar, dateJoined
-      let userMentioned = msg.mentions.users.first()
-      if (!userMentioned) {
-        nickname = getNickname(client, msg.author)
-        id = msg.author.id
-        avatar = msg.author.avatarURL()
-        dateJoined = msg.author.date_joined
-      } else {
-        nickname = getNickname(client, userMentioned)
-        id = userMentioned.id
-        avatar = userMentioned.avatarURL()
-        dateJoined = msg.author.date_joined
-      }
-      const embed = {
-        color: 0xd9ad26,
-        title: nickname,
-        url: 'https://www.aaaimx.org/community/',
-        author: {
-          name: 'AAAI Student Chapter México',
-          icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
-          url: 'https://www.aaaimx.org'
-        },
-        description: '@' + msg.author.username,
-        thumbnail: {
-          url: avatar
-        },
-        fields: [
-          {
-            name: 'ID',
-            value: msg.author.id
-          },
-          {
-            name: 'Date joined',
-            value: '20/12/2018',
-            inline: true
-          },
-          {
-            name: 'Birthday',
-            value: '10/12/1998',
-            inline: true
-          }
-        ],
-        image: {
-          url: 'https://www.aaaimx.org/img/sections-background/community.jpg'
-        },
-        // timestamp: new Date(),
-        footer: {
-          text: 'Association for Advancement of Artificial Intelligence',
-          icon_url: 'https://www.aaaimx.org/img/sprites/aaai-transpeps.png'
-        }
-      }
-      msg.reply({ embed })
-    }
+// Create an event listener for messages
+client.on('message', message => {
+  const command = message.content.split(' ')[0]
+  switch (command) {
+    case '!member':
+      getMembership(message, client)
+      break
+    case '!kick':
+      onKick(message, client)
+      break
+    // TODO: more actions/commands ...
+    default:
+      break
   }
 })
 
