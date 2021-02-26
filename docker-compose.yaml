@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  api:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    image: bot-aaaimx:v1.0
+    container_name: bot-aaaimx
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 8000:8000
+    command: npm start
