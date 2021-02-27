@@ -1,11 +1,11 @@
 version: '3'
 
 services:
-  api:
+  bot:
     build:
       dockerfile: ./Dockerfile
       context: .
-    image: aaaimx/bot-aaaimx:algo
+    image: aaaimx/bot-aaaimx
     container_name: bot-aaaimx
     environment:
       TOKEN: $TOKEN

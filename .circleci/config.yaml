@@ -1,4 +1,3 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
 jobs:
@@ -10,6 +9,6 @@ jobs:
             - "2c:82:3b:f1:a6:cc:82:98:a3:4d:85:35:ec:42:84:bb"
       - checkout
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build -t paulspartan/store-carmesi:$CIRCLE_SHA1 .
-      - run: docker push paulspartan/store-carmesi:$CIRCLE_SHA1
-      - run: ssh -o StrictHostKeyChecking=no root@45.76.253.173 "/bin/bash ~/production/frontend/deploy.sh $CIRCLE_SHA1"
+      - run: docker build -t aaaimx/bot-aaaimx:$CIRCLE_SHA1 .
+      - run: docker push aaaimx/bot-aaaimx:$CIRCLE_SHA1
+      - run: ssh -o StrictHostKeyChecking=no root@45.76.253.173 "/bin/bash ~/production/aaaimx/aaaimx-discord/deploy.sh $CIRCLE_SHA1"
