@@ -5,11 +5,8 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
-    image: bot-aaaimx:v1.0
+    image: aaaimx/bot-aaaimx:algo
     container_name: bot-aaaimx
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    ports:
-      - 8000:8000
+    environment:
+      TOKEN: $TOKEN
     command: npm start
