@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
-    image: aaaimx/bot-aaaimx
+    image: aaaimx/bot-aaaimx:9b86a5cbafc52816d5062b4da8e1850c9890864b
     container_name: bot-aaaimx
     environment:
       TOKEN: $TOKEN

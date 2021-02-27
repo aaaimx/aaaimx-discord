@@ -2,4 +2,4 @@ version: '3'
 
 services:
   bot:
-    image: aaaimx/bot-aaimx:latest
+    image: aaaimx/bot-aaimx:9b86a5cbafc52816d5062b4da8e1850c9890864b
