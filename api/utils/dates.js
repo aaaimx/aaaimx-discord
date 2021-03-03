@@ -12,8 +12,10 @@ const longDate = date => {
 
 const shortDateTime = date => {
   const event = new Date(date)
+  console.log(event.getTimezoneOffset())
   return event.toLocaleString('es-MX', {
     hour12: true,
+    timeZone: 'America/Merida',
     dateStyle: 'long',
     timeStyle: 'long'
   })
