@@ -25,6 +25,15 @@ client.on('guildMemberAdd', member => onGuildMemberAdd(member, client))
 client.on('message', message => {
   const command = message.content.split(' ')[0]
   switch (command) {
+    case 'ping':
+      message.reply('Pong!')
+      break
+    case 'Ping':
+      message.reply('Pong!')
+      break
+    case '!ping':
+      message.reply('Pong!')
+      break
     case '!member':
       getMembership(message, client)
       break
