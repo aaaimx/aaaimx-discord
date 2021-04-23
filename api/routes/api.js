@@ -3,18 +3,18 @@ const router = express.Router()
 // Extract the required classes from the discord.js module
 const { Client } = require('discord.js')
 
-const {
-  getAllMembers,
-  getAllRoles,
-  longDate,
-  kickMembers
-} = require('../../src/utils')
+const { getAllMembers, getAllRoles, kickMembers } = require('../../src/utils')
 const { getChannel } = require('../../src/helpers')
 const {
   BOT_CHANNEL_ID,
   EVENTS_COMMITTEE_CHANNEL_ID,
   OUTREACH_COMMITTEE_CHANNEL_ID
 } = require('../../src/constants')
+const {
+  generateEventDetailsEmbed,
+  generateEventDescriptionEmbed,
+  generateCertificateEmbed
+} = require('../utils/embeds')
 
 /* GET Discord server members */
 router.get('/members', async (req, res, next) => {
@@ -70,74 +70,8 @@ router.post('/messages/events/reminder', async (req, res, next) => {
   const client = new Client()
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
-    const embed1 = {
-      color: 0xd9ad26,
-      title: event.title,
-      url: 'https://www.aaaimx.org/admin/#/events/' + event.id,
-      author: {
-        name: 'AAAIMX Event Manager',
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
-        url: 'https://www.aaaimx.org/admin/#/'
-      },
-      fields: [
-        {
-          name: 'Fechas',
-          value: `${longDate(event.date_start)} - ${longDate(event.date_end)}`
-        },
-        {
-          name: 'Disponibilidad',
-          value: event.open_to_public
-            ? 'Abierto al público'
-            : event.corum + ' personas',
-          inline: true
-        },
-        {
-          name: 'Horas para CC',
-          value: event.hours,
-          inline: true
-        },
-        {
-          name: 'Tipo de evento',
-          value: event.type || 'No establecido',
-          inline: true
-        },
-        {
-          name: 'Division',
-          value: event.division ? event.division.name : 'AAAIMX',
-          inline: true
-        },
-        {
-          name: 'Actividades requeridas',
-          value: `
-          - Flyer
-          - Certificados
-          - Publicar en Discord (**#events**) y 24 hrs después en redes sociales (**Faceboook**, **Instagram**, ...)
-          - **24 hrs antes** del evento enviar correos de confirmación
-          - Exportar la **lista de asistentes** y enviarsela al tallerista
-          `
-        }
-      ],
-      timestamp: new Date(),
-      footer: {
-        text: 'Recordatorio de Evento',
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
-      }
-    }
-    const embed2 = {
-      color: 0xd9ad26,
-      title: 'Información adicional',
-      author: {
-        name: 'AAAIMX Event Manager',
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
-        url: 'https://www.aaaimx.org/admin/#/'
-      },
-      description: event.description,
-      timestamp: new Date(),
-      footer: {
-        text: 'Recordatorio de Evento',
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
-      }
-    }
+    const embed1 = generateEventDetailsEmbed(event)
+    const embed2 = generateEventDescriptionEmbed(event.description)
     if (process.env.NODE_ENV === 'development') {
       const channel = await getChannel(client, BOT_CHANNEL_ID)
       channel.send({ embed: embed1 })
@@ -167,42 +101,7 @@ router.post('/messages/certificates/new', async (req, res, next) => {
   client.login(process.env.TOKEN)
   client.on('ready', async () => {
     console.log('Logged as AAAIMX!')
-    const embed = {
-      color: 0xd9ad26,
-      title: `CERTIFICATE OF ${certificate.type} | ${certificate.to}`,
-      url: 'https://www.aaaimx.org/certificates/?id=' + certificate.uuid,
-      author: {
-        name: 'AAAIMX Event Manager',
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png',
-        url: 'https://www.aaaimx.org/admin/#/'
-      },
-      description: certificate.description,
-      fields: [
-        {
-          name: 'Fecha',
-          value: new Date(certificate.created_at).toLocaleDateString(),
-          inline: true
-        },
-        {
-          name: 'Estado',
-          value: certificate.published ? 'Online' : 'Draft',
-          inline: true
-        },
-        {
-          name: 'Evento',
-          value: certificate.event ? certificate.event.title : 'No indicado',
-          inline: true
-        }
-      ],
-      image: {
-        url: certificate.file
-      },
-      timestamp: new Date(),
-      footer: {
-        text: 'ID: ' + certificate.uuid,
-        icon_url: 'https://www.aaaimx.org/img/sprites/aaaimx-transparent.png'
-      }
-    }
+    const embed = generateCertificateEmbed(certificate)
     let channel
     if (process.env.NODE_ENV === 'development') {
       channel = await getChannel(client, BOT_CHANNEL_ID)
