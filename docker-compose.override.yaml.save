@@ -1,0 +1,5 @@
+version: '3'
+
+services:
+  bot:
+    image: 9b86a5cbafc52816d5062b4da8e1850c9890864b
